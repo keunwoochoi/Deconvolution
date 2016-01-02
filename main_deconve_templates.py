@@ -22,6 +22,8 @@ from multiprocessing import Pool
 print '--- prepare files ---'
 path_src = 'src_templates/'
 path_SRC = 'src_templates_stft/'
+if not os.path.exists(path_SRC):
+	os.makedirs(path_SRC)
 path_results = 'results/'
 if not os.path.exists(path_results):
 	os.makedirs(path_results)
