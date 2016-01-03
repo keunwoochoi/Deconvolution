@@ -27,7 +27,6 @@ class template_info:
 if __name__=="__main__":
 
 	tpl_info = template_info()
-	tpl_info.harmonic_ins = ['Sine', 'Piano', 'Acoustic_guitar', 'Electric_guiar', 'Saxophone', 'Strings']
 	#load file
 	
 	path_in = 'src_template_original/templates.wav'
@@ -54,10 +53,6 @@ if __name__=="__main__":
 	seg_idx = -1
 	for h_key in tpl_info.harmonic_keys:
 		for h_inst in tpl_info.harmonic_ins:
-			print h_inst
-			if h_inst != 'Sine':
-				print 'sine only'
-				continue
 			for h_chord in tpl_info.harmonic_chords:
 				segment_name = '%s_%s_%s' % (h_key, h_inst, h_chord)
 				seg_idx += 1

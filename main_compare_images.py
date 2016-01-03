@@ -7,13 +7,14 @@ import numpy as np
 import librosa
 import pdb
 import os
+import sys
 from multiprocessing import Pool
 from main_trim import template_info
 from constants import *
 
 def export_image(args):
 	feat, tpl_info, h_key, layer = args
-	harmonic_ins = tpl_info.harmonic_ins, 
+	harmonic_ins = tpl_info.harmonic_ins
 	harmonic_chords = tpl_info.harmonic_chords
 
 	sub_folder = '%d_%d/' % (layer ,feat)
@@ -28,7 +29,7 @@ def export_image(args):
 	if not os.path.exists(path_img_out):
 		os.makedirs(path_img_out)
 	if not os.path.exists(path_img_out2):
-	os.makedirs(path_img_out2)
+		os.makedirs(path_img_out2)
 
 	img_name = '%d_%d_%s.png' % (layer, feat, h_key)
 	if os.path.exists(path_img_out2 + img_name):
@@ -40,7 +41,6 @@ def export_image(args):
 							ncols=len(harmonic_chords),
 							sharex='col', 
 							sharey='row')
-	
 	for inst_idx, h_inst in enumerate(harmonic_ins):
 		for chord_idx, h_chord in enumerate(harmonic_chords):
 			ax = axes[inst_idx][chord_idx]
@@ -66,23 +66,34 @@ def export_image(args):
 	fig.savefig(os.path.join(path_img_out2, img_name), dpi=200, bbox_inches='tight')
 	plt.close(fig)
 	print '%s: done' % img_name
-
+	return
 
 if __name__=="__main__":
 
+	if len(sys.argv) == 2:
+		layers = [int(sys.argv[1])]
+	else:
+		layers = [5,4,3,2,1]	
+
 	tpl_info = template_info()
 	
-	p = Pool(48)
+	p = Pool(8)
+	p.daemon = True
 
-	layers = [5,4,3,2,1]
+	
 	num_features = 64
 	features = range(64)
 
 	seg_idx = -1
 	for layer in layers:
 		for h_key in tpl_info.harmonic_keys:
-			args = zip(features, [tpl_info]*num_features, [h_key]*num_features, [layer]*num_features)
-			p.map(export_image)
+			# multiprocessing doesn't work due to matplotlib/GUI/main_thread/etc..
+			# args = zip(features, [tpl_info]*num_features, [h_key]*num_features, [layer]*num_features)
+			# p.map(export_image, args)
+			for feat in features:
+				args= (feat, tpl_info, h_key, layer)
+				export_image(args)
+
 			
 	'''
 	for p_inst in tpl_info.percussive_ins:
