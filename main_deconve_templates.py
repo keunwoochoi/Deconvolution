@@ -6,8 +6,9 @@ import os
 import sys
 import librosa
 from scipy.misc import imsave
-import auralise
 from multiprocessing import Pool
+import auralise
+from main_trim import template_info
 
 ''' 2015-09-28 Keunwoo Choi
 - [0] load cnn weights that is learned from keras (http://keras.io) - but you don't need to install it.
@@ -28,14 +29,17 @@ path_results = 'results/'
 if not os.path.exists(path_results):
 	os.makedirs(path_results)
 depths = [5,4,3,2,1]
+tpl_info = template_info()
+
 
 def deconv_a_file(filename):
 
 	song_id = filename.split('.')[0]
+
 	path_out_here = path_results + song_id + '/'
-	path_img_here = path_results + song_id + '_img/'
+	# path_img_here = path_results + song_id + '_img/'
 	SRC = np.load(path_SRC + filename)
-	if os.path.exists(path_out_here) and os.path.exists(path_img_here):
+	if os.path.exists(path_out_here):
 		print '%s might be done already, I skip this.' % song_id
 		print 'remove %s and %s to proceed.' % (path_out_here, path_img_here)
 	if not os.path.exists(path_out_here):
@@ -112,6 +116,17 @@ if __name__ == "__main__":
 		filenames_SRC.append(song_id + '.npy')
 
 	# deconve
+	filenames_SRC = []
+	for h_key in tpl_info.harmonic_keys:
+		for h_inst in tpl_info.harmonic_ins:
+			for h_chord in tpl_info.harmonic_chords:
+				f_name = '%s_%s_%s.npy' % (h_key, h_inst, h_chord)
+				filenames_SRC.append(f_name)
+				
+	for p_inst in tpl_info.percussive_ins:
+		for p_rhythm in tpl_info.percussive_rhythms:
+			f_name = '%s_%s.npy' % (p_inst, p_rhythm)
+			filenames_SRC.append(f_name)
 
 	p = Pool(48)
 	p.map(deconv_a_file, filenames_SRC)
