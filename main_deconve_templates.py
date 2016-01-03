@@ -40,8 +40,8 @@ def deconv_a_file(filename):
 		print 'remove %s and %s to proceed.' % (path_out_here, path_img_here)
 	if not os.path.exists(path_out_here):
 		os.makedirs(path_out_here)	
-	if not os.path.exists(path_img_here):
-		os.makedirs(path_img_here)
+	# if not os.path.exists(path_img_here):
+	# 	os.makedirs(path_img_here)
 	filename_out = '%s_a_original.wav' % (song_id)	
 	librosa.output.write_wav(path_out_here + filename_out, librosa.istft(SRC, hop_length=N_FFT/2), 
 								sr=SAMPLE_RATE, 
@@ -63,11 +63,11 @@ def deconv_a_file(filename):
 			librosa.output.write_wav(path_out_here + filename_out, librosa.istft(deconvedSRC, hop_length=N_FFT/2), 
 								sr=SAMPLE_RATE, 
 								norm=True)
-			filename_img_out = 'spectrogram_%s_from_depth_%d_feature_%d.png' % (song_id, depth, deconved_feature_ind)
-			imsave(path_img_here + filename_img_out , np.flipud(np.multiply(np.abs(SRC), MASK)))
+			# filename_img_out = 'spectrogram_%s_from_depth_%d_feature_%d.png' % (song_id, depth, deconved_feature_ind)
+			# imsave(path_img_here + filename_img_out , np.flipud(np.multiply(np.abs(SRC), MASK)))
 
-			filename_img_out = 'filter_for_%s_from_depth_%d_feature_%d.png' % (song_id, depth, deconved_feature_ind)
-			imsave(path_img_here + filename_img_out , np.flipud(MASK))
+			# filename_img_out = 'filter_for_%s_from_depth_%d_feature_%d.png' % (song_id, depth, deconved_feature_ind)
+			# imsave(path_img_here + filename_img_out , np.flipud(MASK))
 
 
 if __name__ == "__main__":
